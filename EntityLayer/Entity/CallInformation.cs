@@ -9,7 +9,7 @@ namespace RabbitMQRead.Entity
     public class CallInformation
     {
         public int id { get; set; }
-        public DateTime Date { get; set; }
+        public DateTimeOffset Date { get; set; }
         public string External { get; set; }
         public string Internal { get; set; }
         public string SipStatus { get; set; }

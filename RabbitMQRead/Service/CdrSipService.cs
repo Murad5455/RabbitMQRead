@@ -1,17 +1,19 @@
-﻿using RabbitMQRead.AppContext;
+﻿using Newtonsoft.Json;
+using RabbitMQRead.AppContext;
 using RabbitMQRead.Entity;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace RabbitMQRead.Service
+namespace RabbitMQRead.Base
 {
     public class CdrSipService
     {
-
         public static object ParseMessageToEntity(string message, string exchangeName)
         {
             return exchangeName switch
@@ -22,19 +24,19 @@ namespace RabbitMQRead.Service
             };
         }
 
-
         public static void AddEntityToDbContext(ApplicationContext dbContext, object entity)
         {
             if (entity is CallInformationDetailed callInfoDetailed)
             {
-                dbContext.CallInformationDetaileds.Add((CallInformationDetailed)entity);
-                //  dbContext.Set<CallInformationDetailed>().Add(callInfoDetailed);
+                
+                callInfoDetailed.Date = ToUtcDateTime(callInfoDetailed.Date);
+                dbContext.CallInformationDetaileds.Add(callInfoDetailed);
             }
             else if (entity is CallInformation callInfo)
             {
-                //  dbContext.Set<CallInformation>().Add(callInfo);
-                dbContext.CallInformations.Add((CallInformation)entity);
-
+                
+                callInfo.Date = ToUtcDateTime(callInfo.Date);
+                dbContext.CallInformations.Add(callInfo);
             }
             else
             {
@@ -42,84 +44,41 @@ namespace RabbitMQRead.Service
             }
         }
 
-        /* static T ParseMessageToInfoData<T>(string message)
-         {
-             try
-             {
-                 return JsonSerializer.Deserialize<T>(message);
-             }
-             catch (JsonException ex)
-             {
-                 Console.WriteLine($"Json deserialization hatası: {ex.Message}");
-                 return default;
-             }
-         }*/
-
-
-
         static T ParseMessageToInfoData<T>(string message)
         {
-
-            T parsedData = JsonSerializer.Deserialize<T>(message);
-
-
-            if (parsedData is CallInformation hasUtcDateTime)
+            try
             {
-                Console.WriteLine(parsedData);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new DateTimeOffsetConverter() }
+                };
 
-                var result = hasUtcDateTime.Date.ToUniversalTime();
+                return System.Text.Json.JsonSerializer.Deserialize<T>(message, options);
             }
-            var test = DateTime.Now;
-            Console.WriteLine(test);
-            var a = test.ToUniversalTime();
-            Console.WriteLine(a);
+            catch (System.Text.Json.JsonException ex)
+            {
+                Console.WriteLine($"Json deserialization hatası: {ex.Message}");
+                return default;
+            }
+        }
 
-            return parsedData;
-
+        private static DateTimeOffset ToUtcDateTime(DateTimeOffset? dateTimeOffset)
+        {
+            return dateTimeOffset?.UtcDateTime ?? DateTimeOffset.MinValue;
         }
     }
 
-    /* public interface IHasUtcDateTime
-     {
-         DateTime? UtcDateTime { get; set; }
-         DateTime? UtcDateTimea { get; set; }
-     }
+    public class DateTimeOffsetConverter : JsonConverter<DateTimeOffset>
+    {
+        public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return DateTimeOffset.Parse(reader.GetString(), null, DateTimeStyles.AssumeUniversal);
+        }
 
-     public class MyData : IHasUtcDateTime
-     {
-         public DateTime? UtcDateTime { get; set; }
-         public DateTime? UtcDateTimea { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-         // Diğer özellikler...
-     }
-
-     static T ParseMessageToInfoData<T>(string message)
-     {
-         try
-         {
-             T parsedData = JsonSerializer.Deserialize<T>(message);
-
-             if (parsedData is IHasUtcDateTime hasUtcDateTime)
-             {
-                 if (hasUtcDateTime.UtcDateTime != null)
-                 {
-                     // UtcDateTime'ı UTC'ye çevir
-                     hasUtcDateTime.UtcDateTime = hasUtcDateTime.UtcDateTime.Value.ToUniversalTime();
-                 }
-             }
-
-             return parsedData;
-         }
-         catch (JsonException ex)
-         {
-             Console.WriteLine($"Json deserialization hatası: {ex.Message}");
-             return default;
-         }
-     }
-*/
-
-
-
-
-
+        public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString("O")); 
+        }
+    }
 }
-

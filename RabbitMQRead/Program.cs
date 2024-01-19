@@ -12,9 +12,7 @@ class Program
     static void Main()
     {
         Collector.StartCollector();
-
-       /* Task sipTask = Task.Run(() => Collector.StartCollector());    
-        Task.WaitAll(sipTask);*/
+       
     
     }
 }
