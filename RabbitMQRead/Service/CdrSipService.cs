@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using RabbitMQRead.AppContext;
 using RabbitMQRead.Entity;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -66,6 +67,7 @@ namespace RabbitMQRead.Base
 
         static T ParseMessageToInfoData<T>(string message)
         {
+            Log.Information("ParseMessageToInfoData islemeye basladi");
             try
             {
                 var options = new JsonSerializerOptions
@@ -80,7 +82,9 @@ namespace RabbitMQRead.Base
             {
                 Console.WriteLine($"Json deserialization hatası: {ex.Message}");
                 return default;
+                Log.Error("Deserialize islemir", ex);
             }
+           
         }
 
         private static DateTimeOffset ToUtcDateTime(DateTimeOffset? dateTimeOffset)

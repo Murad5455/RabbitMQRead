@@ -5,6 +5,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQRead.AppContext;
 using RabbitMQRead.Base;
+using Serilog;
 
 namespace RabbitMQRead.SipCdrCollector
 {
@@ -23,6 +24,7 @@ namespace RabbitMQRead.SipCdrCollector
   
         public void StartCollector()
         {
+            Log.Information("StartCollector islemeye basladi");
             var rabbitMqSettings = _configuration.GetSection("RabbitMQConnection");
             var sipCdrSettings = _configuration.GetSection("SipCdrSettings");
 
@@ -55,18 +57,20 @@ namespace RabbitMQRead.SipCdrCollector
 
                         AddEntityToDbContext(_context, entity);
                         _context.SaveChanges();
-
+                        Log.Information($"{exchangeName} Database yazildi");
                         Console.WriteLine("[x] Message processed.");
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"[!] Error processing message: {ex.Message}");
+                        Log.Error(ex, "Proses zamani xeta bas verdi");
                     }
                 };
 
                 channel.BasicConsume(queue: "CollectorQueue", autoAck: true, consumer: consumer);
 
                 Console.WriteLine("[x] Waiting for messages. To exit press CTRL+C");
+                Log.Information("RabbitMQ-nu dinlemeye baslayib");
                 Console.ReadLine();
             }
         }

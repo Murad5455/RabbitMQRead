@@ -4,10 +4,18 @@ using Microsoft.Extensions.DependencyInjection;
 using RabbitMQRead.AppContext;
 using RabbitMQRead.Base;
 using RabbitMQRead.SipCdrCollector;
+using Serilog;
+using Serilog.Core;
+
 class Program
 {
     static void Main(string[] args)
     {
+        
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.File(path: @"C:\Log\Test.txt", rollingInterval: RollingInterval.Day).CreateLogger();
+
+       
         var configuration = new ConfigurationBuilder()
           
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
