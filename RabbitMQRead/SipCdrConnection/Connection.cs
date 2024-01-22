@@ -1,30 +1,44 @@
 ﻿using System;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQRead.AppContext;
 using RabbitMQRead.Base;
 
-
 namespace RabbitMQRead.SipCdrCollector
 {
-    public class Connection: CdrSipService
+    public class Connection : CdrSipService
     {
+        private readonly IConfiguration _configuration;
+        private readonly ApplicationContext _context;
         private static readonly string RabbitMQHost = "localhost";
 
-        public static void StartCollector()
+        public Connection(IConfiguration configuration, ApplicationContext context)
+            : base(configuration)
         {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        }
+  
+        public void StartCollector()
+        {
+            var rabbitMqSettings = _configuration.GetSection("RabbitMQConnection");
+            var sipCdrSettings = _configuration.GetSection("SipCdrSettings");
+
             var factory = new ConnectionFactory
             {
-                UserName = "guest",
-                Password = "guest",
-                HostName = RabbitMQHost
+                HostName = rabbitMqSettings["HostName"],
+                UserName = rabbitMqSettings["UserName"],
+                Password = rabbitMqSettings["Password"],
             };
+
+
 
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                SetupRabbitMQ(channel, "Sip", "Cdr", "CollectorQueue");
+                SetupRabbitMQ(channel, sipCdrSettings["SipExchange"], sipCdrSettings["CdrExchange"], "CollectorQueue");
 
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, ea) =>
@@ -39,13 +53,8 @@ namespace RabbitMQRead.SipCdrCollector
 
                         var entity = ParseMessageToEntity(message, exchangeName);
 
-                        using (var dbContext = new ApplicationContext())
-                        {
-                            AddEntityToDbContext(dbContext, entity);
-                            dbContext.SaveChanges();
-                        }
-
-
+                        AddEntityToDbContext(_context, entity);
+                        _context.SaveChanges();
 
                         Console.WriteLine("[x] Message processed.");
                     }
@@ -69,7 +78,6 @@ namespace RabbitMQRead.SipCdrCollector
 
             channel.QueueDeclare(queue: queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-            
             channel.QueueBind(queue: queueName, exchange: sipExchange, routingKey: "");
             channel.QueueBind(queue: queueName, exchange: cdrExchange, routingKey: "");
         }

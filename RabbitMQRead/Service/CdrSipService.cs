@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RabbitMQRead.AppContext;
 using RabbitMQRead.Entity;
 using System;
@@ -14,12 +15,31 @@ namespace RabbitMQRead.Base
 {
     public class CdrSipService
     {
-        public static object ParseMessageToEntity(string message, string exchangeName)
+        private readonly IConfiguration _configuration;
+        private readonly ApplicationContext _context;
+
+        public CdrSipService(IConfiguration configuration)
         {
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _context = new ApplicationContext(configuration);
+        }
+       
+
+        public object ParseMessageToEntity(string message, string exchangeName)
+        {
+            var sipCdrSettings = _configuration.GetSection("SipCdrSettings");
+           
+            string sipExchange = sipCdrSettings["SipExchange"];
+            string cdrExchange = sipCdrSettings["CdrExchange"];
+
+            string[] validExchangeNames = { sipExchange, cdrExchange };
+
+
             return exchangeName switch
             {
-                "Cdr" => ParseMessageToInfoData<CallInformationDetailed>(message),
-                "Sip" => ParseMessageToInfoData<CallInformation>(message),
+
+                _ when exchangeName == cdrExchange => ParseMessageToInfoData<CallInformationDetailed>(message),
+                _ when exchangeName == sipExchange => ParseMessageToInfoData<CallInformation>(message),
                 _ => throw new ArgumentException($"Unsupported exchange name: {exchangeName}")
             };
         }
