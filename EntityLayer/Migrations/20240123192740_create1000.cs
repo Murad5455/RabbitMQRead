@@ -4,7 +4,7 @@
 
 namespace EntityLayer.Migrations
 {
-    public partial class mig10 : Migration
+    public partial class create1000 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -12,8 +12,8 @@ using RabbitMQRead.AppContext;
 namespace EntityLayer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240115074220_mig1")]
-    partial class mig1
+    [Migration("20240124165418_mig10014")]
+    partial class mig10014
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,7 +32,7 @@ namespace EntityLayer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTimeOffset>("Date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("External")
@@ -60,7 +60,61 @@ namespace EntityLayer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CallAnswered")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("CallDuraction")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CallEnded")
+                        .HasColumnType("text");
+
                     b.Property<string>("CallId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CallStarted")
+                        .HasColumnType("text");
+
+                    b.Property<int>("CallType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Chain")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cif")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("DialResult")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("External")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GatewayName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Internal")
+                        .HasColumnType("text");
+
+                    b.Property<string>("IsMakeCall")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReasonChanged")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReasonTerminated")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SipStatus")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SipStatusRecived")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

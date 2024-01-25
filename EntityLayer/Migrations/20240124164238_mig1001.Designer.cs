@@ -12,8 +12,8 @@ using RabbitMQRead.AppContext;
 namespace EntityLayer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240118170114_mig10")]
-    partial class mig10
+    [Migration("20240124164238_mig1001")]
+    partial class mig1001
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

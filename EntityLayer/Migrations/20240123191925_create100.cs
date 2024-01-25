@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EntityLayer.Migrations
 {
-    public partial class mig1 : Migration
+    public partial class create100 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +16,25 @@ namespace EntityLayer.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CallId = table.Column<string>(type: "text", nullable: true)
+                    CallId = table.Column<string>(type: "text", nullable: true),
+                    Date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CallStarted = table.Column<string>(type: "text", nullable: true),
+                    CallEnded = table.Column<string>(type: "text", nullable: true),
+                    CallAnswered = table.Column<string>(type: "text", nullable: true),
+                    GatewayName = table.Column<string>(type: "text", nullable: true),
+                    IsMakeCall = table.Column<string>(type: "text", nullable: true),
+                    Chain = table.Column<string>(type: "text", nullable: true),
+                    ReasonTerminated = table.Column<string>(type: "text", nullable: true),
+                    ReasonChanged = table.Column<string>(type: "text", nullable: true),
+                    CallType = table.Column<int>(type: "integer", nullable: false),
+                    CallDuraction = table.Column<int>(type: "integer", nullable: true),
+                    Internal = table.Column<string>(type: "text", nullable: true),
+                    SipStatusRecived = table.Column<string>(type: "text", nullable: true),
+                    SipStatus = table.Column<string>(type: "text", nullable: true),
+                    External = table.Column<string>(type: "text", nullable: true),
+                    DialResult = table.Column<int>(type: "integer", nullable: true),
+                    CustomerId = table.Column<string>(type: "text", nullable: true),
+                    Cif = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,7 +47,7 @@ namespace EntityLayer.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     External = table.Column<string>(type: "text", nullable: false),
                     Internal = table.Column<string>(type: "text", nullable: false),
                     SipStatus = table.Column<string>(type: "text", nullable: false)

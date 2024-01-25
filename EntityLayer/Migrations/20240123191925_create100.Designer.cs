@@ -12,8 +12,8 @@ using RabbitMQRead.AppContext;
 namespace EntityLayer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240115141206_mig")]
-    partial class mig
+    [Migration("20240123191925_create100")]
+    partial class create100
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,7 +32,7 @@ namespace EntityLayer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTimeOffset>("Date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("External")
@@ -86,6 +86,9 @@ namespace EntityLayer.Migrations
 
                     b.Property<string>("CustomerId")
                         .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("Date")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("DialResult")
                         .HasColumnType("integer");
