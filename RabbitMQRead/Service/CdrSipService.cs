@@ -25,12 +25,12 @@ namespace RabbitMQRead.Base
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _context = new ApplicationContext(configuration);
         }
-       
+
 
         public object ParseMessageToEntity(string message, string exchangeName)
         {
             var sipCdrSettings = _configuration.GetSection("SipCdrSettings");
-           
+
             string sipExchange = sipCdrSettings["SipExchange"];
             string cdrExchange = sipCdrSettings["CdrExchange"];
 
@@ -50,13 +50,20 @@ namespace RabbitMQRead.Base
         {
             if (entity is CallInformationDetailed callInfoDetailed)
             {
-                
+
                 callInfoDetailed.Date = ToUtcDateTime(callInfoDetailed.Date);
+
+
+
+              var a = callInfoDetailed.CallAnswered = StringToUtcDateTime(callInfoDetailed.NotMappedCallAnswered);
+                callInfoDetailed.CallEnded = StringToUtcDateTime(callInfoDetailed.NotMappedCallEnded);
+                //Console.WriteLine(callInfoDetailed.CallStarted1);
+                callInfoDetailed.CallStarted = StringToUtcDateTime(callInfoDetailed.NotMappedCallStarted);
                 dbContext.CallInformationDetaileds.Add(callInfoDetailed);
             }
             else if (entity is CallInformation callInfo)
             {
-                
+
                 callInfo.Date = ToUtcDateTime(callInfo.Date);
                 dbContext.CallInformations.Add(callInfo);
             }
@@ -85,12 +92,24 @@ namespace RabbitMQRead.Base
                 return default;
                 Log.Error("Deserialize islemir", ex);
             }
-           
+
         }
 
         private static DateTimeOffset ToUtcDateTime(DateTimeOffset? dateTimeOffset)
         {
             return dateTimeOffset?.UtcDateTime ?? DateTimeOffset.MinValue;
+        }
+        public static DateTime StringToUtcDateTime(string str)
+        {
+
+            if (DateTime.TryParseExact(str, "dd/MM/yyyy HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime tarih))
+            {
+
+                return tarih.ToUniversalTime();
+            }
+
+            return DateTime.Now;
+
         }
     }
 

@@ -12,11 +12,13 @@ namespace RabbitMQRead.Entity
 
         public DateTimeOffset? Date { get; set; }
 
-        public string? CallStarted { get; set; }
+        public DateTimeOffset? CallStarted { get; set; }
 
-        public string? CallEnded { get; set; }
+        public DateTimeOffset? CallStartedTest { get; set; }
 
-        public string? CallAnswered { get; set; }
+        public DateTimeOffset? CallEnded { get; set; }
+
+        public DateTimeOffset? CallAnswered { get; set; }
 
         public string? GatewayName { get; set; }
 
@@ -29,6 +31,18 @@ namespace RabbitMQRead.Entity
         public string? ReasonChanged { get; set; }
 
         public CallType CallType { get; set; }
+
+
+        [NotMapped]
+        public string NotMappedCallStarted { get; set; }
+
+        [NotMapped]
+        public string NotMappedCallEnded { get; set; }
+
+        [NotMapped]
+        public string NotMappedCallAnswered { get; set; }
+
+
 
 
     }

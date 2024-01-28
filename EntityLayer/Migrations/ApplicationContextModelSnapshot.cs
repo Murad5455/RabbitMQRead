@@ -58,20 +58,23 @@ namespace EntityLayer.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CallAnswered")
-                        .HasColumnType("text");
+                    b.Property<DateTimeOffset?>("CallAnswered")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("CallDuraction")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CallEnded")
-                        .HasColumnType("text");
+                    b.Property<DateTimeOffset?>("CallEnded")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CallId")
                         .HasColumnType("text");
 
-                    b.Property<string>("CallStarted")
-                        .HasColumnType("text");
+                    b.Property<DateTimeOffset?>("CallStarted")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("CallStartedTest")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("CallType")
                         .HasColumnType("integer");

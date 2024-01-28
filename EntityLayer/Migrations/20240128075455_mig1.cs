@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace EntityLayer.Migrations
 {
-    public partial class create100 : Migration
+    public partial class mig1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,9 +18,10 @@ namespace EntityLayer.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CallId = table.Column<string>(type: "text", nullable: true),
                     Date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    CallStarted = table.Column<string>(type: "text", nullable: true),
-                    CallEnded = table.Column<string>(type: "text", nullable: true),
-                    CallAnswered = table.Column<string>(type: "text", nullable: true),
+                    CallStarted = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CallStartedTest = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CallEnded = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    CallAnswered = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     GatewayName = table.Column<string>(type: "text", nullable: true),
                     IsMakeCall = table.Column<string>(type: "text", nullable: true),
                     Chain = table.Column<string>(type: "text", nullable: true),

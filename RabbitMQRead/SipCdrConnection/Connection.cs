@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQRead.AppContext;
-//using RabbitMQRead.AppContext;
 using RabbitMQRead.Base;
 using Serilog;
 

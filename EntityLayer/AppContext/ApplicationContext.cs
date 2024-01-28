@@ -158,7 +158,7 @@ namespace RabbitMQRead.AppContext
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=Rabbit100;Username=postgres;Password=Murad3645;");
+            optionsBuilder.UseNpgsql("Host=localhost;Database=Rabbit102;Username=postgres;Password=Murad3645;");
         }
 
         public DbSet<CallInformation> CallInformations { get; set; }
